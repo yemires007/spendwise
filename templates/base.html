@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}SpendWise{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<script>
+  if (sessionStorage.getItem('sw_loaded')) document.documentElement.classList.add('no-loader');
+</script>
+</head>
+<body>
+
+<div id="loader" class="loader">
+  <div class="loader-inner">
+    <div class="spinner"></div>
+    <div class="loader-brand">Spend<b>Wise</b></div>
+  </div>
+</div>
+
+<nav>
+  <div class="wrap nav-in">
+    <a href="{{ url_for('index') }}" class="brand">Spend<b>Wise</b></a>
+    {% if user %}
+    <div class="nav-links">
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('analytics') }}">Analytics</a>
+    </div>
+    <a href="{{ url_for('logout') }}" class="nav-cta">Log out</a>
+    {% else %}
+    <span class="nav-tag">Expense tracker demo</span>
+    {% endif %}
+  </div>
+</nav>
+
+<main class="wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  {% block body %}{% endblock %}
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>SpendWise — a portfolio demo by Adeyemi Oluwaseyi Alao. Sample data only.</p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var l = document.getElementById('loader');
+    if(!l) return;
+    if (document.documentElement.classList.contains('no-loader')) { l.remove(); return; }
+    function hide(){ l.classList.add('hide'); setTimeout(function(){ l.remove(); }, 600); }
+    if (document.readyState === 'complete') { setTimeout(hide, 550); }
+    else { window.addEventListener('load', function(){ setTimeout(hide, 550); }); }
+    sessionStorage.setItem('sw_loaded', '1');
+  })();
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

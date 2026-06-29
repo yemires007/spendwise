@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}SpendWise — Sign in{% endblock %}
+
+{% block body %}
+<section class="hero">
+  <h1>Track every naira.</h1>
+  <p>Record your spending, organise it by category, and see where your money actually goes — with a clean dashboard and simple analytics.</p>
+</section>
+
+<div class="auth-grid">
+  <div class="panel">
+    <h2>Log in</h2>
+    <form method="POST" action="{{ url_for('login') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Username<input type="text" name="username" autocomplete="username" required></label>
+      <label>Password<input type="password" name="password" autocomplete="current-password" required></label>
+      <button type="submit" class="btn">Log in →</button>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h2>Create an account</h2>
+    <form method="POST" action="{{ url_for('register') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Name<input type="text" name="name" value="{{ reg.name if reg else '' }}" required></label>
+      <label>Username<input type="text" name="username" value="{{ reg.username if reg else '' }}" required></label>
+      <div class="row">
+        <label>Password<input type="password" name="password" minlength="6" required></label>
+        <label>Confirm<input type="password" name="confirm" minlength="6" required></label>
+      </div>
+      <button type="submit" class="btn">Sign up</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

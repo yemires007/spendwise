@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Edit expense — SpendWise{% endblock %}
+
+{% block body %}
+<div class="panel narrow">
+  <h2>Edit expense</h2>
+  <form method="POST" action="{{ url_for('edit_expense', expense_id=exp.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Amount (₦)<input type="number" name="amount" min="0.01" step="0.01" value="{{ '%.2f'|format(exp.amount) }}" required></label>
+    <label>Category
+      <select name="category" required>
+        {% for c in categories %}<option value="{{ c }}" {% if c==exp.category %}selected{% endif %}>{{ c }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Note<input type="text" name="note" maxlength="200" value="{{ exp.note }}"></label>
+    <label>Date<input type="date" name="spent_on" value="{{ exp.spent_on }}" max="{{ today }}" required></label>
+    <div class="row">
+      <button type="submit" class="btn">Save changes</button>
+      <a href="{{ url_for('dashboard') }}" class="btn ghost">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — SpendWise{% endblock %}
+
+{% block body %}
+<div class="stats">
+  <div class="stat"><span class="lab">This month</span><div class="val">{{ month_total | naira }}</div></div>
+  <div class="stat"><span class="lab">Entries this month</span><div class="val">{{ month_count }}</div></div>
+  <div class="stat"><span class="lab">All-time total</span><div class="val">{{ all_total | naira }}</div></div>
+  <div class="stat"><span class="lab">Top category (month)</span><div class="val small">{{ top_cat }}</div></div>
+</div>
+
+<div class="cols">
+  <!-- add expense -->
+  <section class="panel add-panel">
+    <h2>Add an expense</h2>
+    <form method="POST" action="{{ url_for('add_expense') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Amount (₦)<input type="number" name="amount" min="0.01" step="0.01" placeholder="0.00" required></label>
+      <label>Category
+        <select name="category" required>
+          {% for c in categories %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Note (optional)<input type="text" name="note" maxlength="200" placeholder="e.g. lunch at work"></label>
+      <label>Date<input type="date" name="spent_on" value="{{ today }}" max="{{ today }}" required></label>
+      <button type="submit" class="btn">Add expense</button>
+    </form>
+  </section>
+
+  <!-- list -->
+  <section class="panel list-panel">
+    <div class="list-head">
+      <h2>Expenses</h2>
+      <form method="GET" action="{{ url_for('dashboard') }}" class="filters">
+        <select name="month" onchange="this.form.submit()">
+          <option value="">All months</option>
+          {% for m in months %}<option value="{{ m }}" {% if m==sel_month %}selected{% endif %}>{{ m }}</option>{% endfor %}
+        </select>
+        <select name="category" onchange="this.form.submit()">
+          <option value="">All categories</option>
+          {% for c in categories %}<option value="{{ c }}" {% if c==sel_category %}selected{% endif %}>{{ c }}</option>{% endfor %}
+        </select>
+        {% if sel_month or sel_category %}<a class="clear" href="{{ url_for('dashboard') }}">clear</a>{% endif %}
+      </form>
+    </div>
+
+    {% if expenses %}
+    <div class="filtered-total">Showing {{ expenses|length }} — total {{ filtered_total | naira }}</div>
+    <table class="rows">
+      <tbody>
+        {% for e in expenses %}
+        <tr>
+          <td class="cat"><span class="pill">{{ e.category }}</span></td>
+          <td class="note">{{ e.note or '—' }}<span class="when">{{ e.spent_on | nice_date }}</span></td>
+          <td class="amt">{{ e.amount | naira }}</td>
+          <td class="actions">
+            <a href="{{ url_for('edit_expense', expense_id=e.id) }}" class="mini" title="Edit">✎</a>
+            <form method="POST" action="{{ url_for('delete_expense', expense_id=e.id) }}" onsubmit="return confirm('Delete this expense?');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="mini del" title="Delete">🗑</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="muted">No expenses{% if sel_month or sel_category %} match this filter{% endif %} yet. Add one on the left.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

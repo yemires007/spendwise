@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Analytics — SpendWise{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <h2>Spending analytics</h2>
+  <a href="{{ url_for('dashboard') }}" class="muted">← Back to dashboard</a>
+</div>
+
+{% if count == 0 %}
+  <div class="panel"><p class="muted">No expenses yet — add some on the dashboard to see your analytics.</p></div>
+{% else %}
+
+<div class="stats">
+  <div class="stat"><span class="lab">Total spent</span><div class="val">{{ total | naira }}</div></div>
+  <div class="stat"><span class="lab">Entries</span><div class="val">{{ count }}</div></div>
+  <div class="stat"><span class="lab">Avg / month</span><div class="val">{{ avg_month | naira }}</div></div>
+</div>
+
+<div class="analytics-grid">
+  <section class="panel">
+    <h3>By category</h3>
+    {% for row in by_cat %}
+    <div class="bar-row">
+      <div class="bar-top"><span>{{ row.label }}</span><b>{{ row.amount | naira }}</b></div>
+      <div class="bar-track"><i class="bar-fill cat" style="width:{{ row.pct }}%"></i></div>
+    </div>
+    {% endfor %}
+  </section>
+
+  <section class="panel">
+    <h3>By month</h3>
+    {% for m in monthly %}
+    <div class="bar-row">
+      <div class="bar-top"><span>{{ m.month }}</span><b>{{ m.amount | naira }}</b></div>
+      <div class="bar-track"><i class="bar-fill month" style="width:{{ m.pct }}%"></i></div>
+    </div>
+    {% endfor %}
+  </section>
+</div>
+
+{% endif %}
+{% endblock %}
