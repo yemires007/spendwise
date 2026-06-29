@@ -38,6 +38,9 @@ expensetracker/
 ```
 
 ## Deploying
-Same process as the bank app — see `../bankapp/DEPLOY.md`. Upload the folder to
-PythonAnywhere, point the WSGI file at it (use `wsgi_pythonanywhere.py` as a
-template), set `SECRET_KEY`, and Reload.
+Recommended: **Render** (free, hosts multiple apps) — see [RENDER.md](RENDER.md).
+This repo includes `render.yaml`, `Procfile`, and `gunicorn` so it deploys with
+one click via a Render Blueprint.
+
+Alternatively, PythonAnywhere — use `wsgi_pythonanywhere.py` as a template (note
+the free tier allows only one web app).

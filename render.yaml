@@ -1,0 +1,14 @@
+# Render Blueprint — deploys SpendWise as a free web service.
+# On Render: New + -> Blueprint -> connect this repo. Render reads this file.
+services:
+  - type: web
+    name: spendwise
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true     # Render generates a strong secret for you
+      - key: PYTHON_VERSION
+        value: "3.12.3"
